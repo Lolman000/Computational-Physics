@@ -1,0 +1,31 @@
+%Not my code, keeping this in storage so I can edit it later.
+
+GlowScript 2.1 VPython
+
+R = 1.0
+v = 1.0
+u = 0.5
+w = v/R
+
+s = "Equilibrium distance = {:.6f}"
+text(text=s.format(R*sqrt(1-(u/v)**2)), pos=vec(-1.5,1.5,0), height=0.1, color=color.yellow,
+        start_face_color=color.red, end_face_color=color.green)
+
+A = sphere(pos=vector(R,0,0), radius=0.04, color=color.red, 
+                make_trail=True, trail_type='points', interval=200)
+
+B = sphere(pos=vector((2*random()-1)*2*R,(2*random()-1)*2*R,0), radius=0.04, color=color.cyan,
+                make_trail=True, interval=200,retain=2000)
+
+t = 0
+dt = 1e-4
+while True:
+    rate(100000)
+    t += dt
+    APrev = A.pos
+    A.pos=vector(R*cos(w*t),R*sin(w*t),0)
+    AAvg = (APrev+A.pos)/2
+    uhat = norm(AAvg-B.pos)
+    B.pos = B.pos + u*uhat*dt
+    if (t%1.0 < dt):
+        print(mag(A.pos-B.pos))
